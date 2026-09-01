@@ -23,9 +23,11 @@ function InscriptionContent() {
     setError("");
     setLoading(true);
 
+    const normalizedEmail = email.trim().toLowerCase();
+
     const { data, error: signUpError } =
       await supabase.auth.signUp({
-        email,
+        email: normalizedEmail,
         password,
       });
 
@@ -43,7 +45,7 @@ function InscriptionContent() {
       .insert({
         id: data.user.id,
         role,
-        email: data.user.email,
+        email: normalizedEmail,
       });
 
     if (profileError) {
