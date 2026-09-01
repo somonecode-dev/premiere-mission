@@ -72,7 +72,6 @@ Les organisations peuvent :
 - Consultation des missions
 - Consultation détaillée d'une mission
 - Informations sur le domaine, le niveau et la durée
-- Gestion de l'état actif/inactif des missions
 
 ### Candidatures
 
