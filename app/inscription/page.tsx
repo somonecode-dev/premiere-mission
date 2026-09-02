@@ -9,6 +9,7 @@ function InscriptionContent() {
   const searchParams = useSearchParams();
   const supabase = createClient();
 
+  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState<"candidate" | "organization">(
@@ -23,13 +24,19 @@ function InscriptionContent() {
     setError("");
     setLoading(true);
 
+    const normalizedFullName = fullName.trim();
     const normalizedEmail = email.trim().toLowerCase();
 
-    const { data, error: signUpError } =
-      await supabase.auth.signUp({
-        email: normalizedEmail,
-        password,
-      });
+    if (!normalizedFullName) {
+      setError("Merci de renseigner ton nom complet.");
+      setLoading(false);
+      return;
+    }
+
+    const { data, error: signUpError } = await supabase.auth.signUp({
+      email: normalizedEmail,
+      password,
+    });
 
     if (signUpError || !data.user) {
       setError(
@@ -45,6 +52,7 @@ function InscriptionContent() {
       .insert({
         id: data.user.id,
         role,
+        full_name: normalizedFullName,
         email: normalizedEmail,
       });
 
@@ -114,6 +122,31 @@ function InscriptionContent() {
                   Organisation
                 </option>
               </select>
+            </div>
+
+            <div>
+              <label
+                htmlFor="fullName"
+                className="mb-2 block text-sm font-semibold text-slate-700"
+              >
+                {role === "organization"
+                  ? "Nom de l'organisation"
+                  : "Nom complet"}
+              </label>
+
+              <input
+                id="fullName"
+                type="text"
+                value={fullName}
+                onChange={(event) => setFullName(event.target.value)}
+                placeholder={
+                  role === "organization"
+                    ? "Nom de ton organisation"
+                    : "Ton nom et prénom"
+                }
+                required
+                className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
+              />
             </div>
 
             <div>
